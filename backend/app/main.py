@@ -10,6 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
 from app.routers import ROUTERS
+from app.services.shorepower import ShorepowerService
 from app.store import store
 
 app = FastAPI(title="港口集装箱作业管理平台", version="1.0.0")
@@ -35,4 +36,14 @@ def health() -> dict[str, object]:
 @app.get("/api/overview")
 def overview() -> dict[str, object]:
     """运营概览：把各业务模块的待处理量汇总成看板卡片。"""
-    return store.overview()
+    data = store.overview()
+    # 岸电供电量跟随接电单实时重算，单独给一组卡片，月底对账直接看这里。
+    shore = ShorepowerService().summary()
+    data["shorepower"] = shore
+    data["cards"] = [
+        *data["cards"],
+        {"label": "岸电累计供电量(度)", "value": shore["total_kwh"]},
+        {"label": "在供接电单", "value": shore["energized"]},
+        {"label": "掉电回退(次)", "value": shore["outage_count"]},
+    ]
+    return data
