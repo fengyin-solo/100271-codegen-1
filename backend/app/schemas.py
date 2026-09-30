@@ -257,6 +257,19 @@ class EnergyEntry(BaseModel):
     field_6: str | None = None  # 抄表人员
     field_7: str | None = None  # 能耗状态
 
+class ShorepowerEntry(BaseModel):
+    """岸电接电单明细结构。"""
+
+    field_0: str | None = None  # 接电单号
+    field_1: str | None = None  # 泊位编号
+    field_2: str | None = None  # 船舶编号
+    field_3: str | None = None  # 船名
+    field_4: str | None = None  # 接电箱号
+    field_5: str | None = None  # 续靠次数
+    field_6: str | None = None  # 末次抄见数
+    field_7: str | None = None  # 接电单状态
+
+
 class SafetycheckEntry(BaseModel):
     """巡检记录明细结构。"""
 
